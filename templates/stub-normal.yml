@@ -1,0 +1,18 @@
+---
+meta:
+  environment: NAME
+  service_name: NAME
+  security_groups:
+    - default
+  job_templates:
+    - name: aerospikeserver
+      release: aerospike-managed-service
+  stemcell:
+    name: STEMCELL
+
+director_uuid: PLACEHOLDER-DIRECTOR-UUID
+releases:
+  - name: aerospike-managed-service
+    version: latest
+properties:
+  aerospikeserver: {}

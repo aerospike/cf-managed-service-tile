@@ -1,0 +1,7 @@
+---
+name: service-broker
+
+dependencies: []
+
+files:
+- service-broker-0.0.1-SNAPSHOT.jar

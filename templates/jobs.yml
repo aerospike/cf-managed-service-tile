@@ -1,0 +1,26 @@
+networks: (( merge ))
+
+meta:
+  environment: ~
+  job_templates: (( merge ))
+
+jobs:
+- name: aerospikeserver
+  instances: 1
+  templates:
+  - name: aerospikeserver
+    release: aerospike-managed-service
+  resource_pool: aerospike-nodes
+  networks:
+  - name: aerospike-nodes
+
+- name: service-broker
+  instances: 1
+  templates: 
+  - name: service-broker
+    release: aerospike-managed-service
+  resource_pool: vms
+  networks:
+  - name: default
+
+

@@ -1,0 +1,8 @@
+---
+name: aerospikeserver
+
+dependencies: []
+
+files:
+- aerospike-tools.tgz
+- aerospike.tgz

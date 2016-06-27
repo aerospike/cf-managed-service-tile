@@ -1,0 +1,24 @@
+properties:
+  aerospike_db_host: 127.0.0.1
+  aerospike_db_port: 3000
+  aerospike:
+    service:
+      job_ips: [127.0.0.1]
+      my_addr: 127.0.0.1
+  security:
+    user: test
+    password: test
+  service_broker:
+    name: aerospike
+    user: test
+    password: test
+    enable_global_access_to_plans: true
+  cf:
+    admin_user: admin
+    admin_password: admin
+  ssl:
+    skip_cert_verify: true
+  domain: local.pcfdev.io
+  app_domains: 
+    - local.pcfdev.io
+
