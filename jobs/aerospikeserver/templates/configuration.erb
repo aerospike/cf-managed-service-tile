@@ -56,20 +56,26 @@ network {
 # Namespace used by the Aerospike Service Broker
 namespace cf_admin {
 	replication-factor 2
-	memory-size 1G
+	memory-size 100M
 	default-ttl 0
 	storage-engine memory { }
 }
 
 <% if properties.aerospike.service.namespaces %>
     <%  p("aerospike.service.namespaces").each do |namespace| %>
-    namespace <%="#{namespace.name}"%> {
-    	replication_factor <%="#{namespace.replication_factor}"%>
-    	memory-size <%="#{namespace.memory_size}"%>
-    	default-ttl <%="#{namespace.default_ttl}"%>
-    	high-water-memory-pct <%="#{namespace.high_water_memory_pct}"%>
-    	high-water-disk-pct <%="#{namespace.high_water_disk_pct}"%>
-    	storage-engine memory { }
+namespace <%= namespace["name"] %> {
+    replication-factor <%= namespace["replication_factor"] %>
+    memory-size <%= namespace["memory_size"] %>
+    default-ttl <%= namespace["default_ttl"] %>
+    high-water-memory-pct <%= namespace["high_water_memory_pct"] %>
+    high-water-disk-pct <%= namespace["high_water_disk_pct"] %>
+    storage-engine <%= namespace["storage_type"] %> { 
+    <% if namespace["storage_type"] == "device" %>
+        file /var/vcap/store/<%= namespace["name"] %>.dat
+        filesize <%= namespace["file_size"] %>
+        data-in-memory <%= namespace["data_in_memory"] %>
+    <% end %>
     }
+}
     <% end %>
 <% end %>

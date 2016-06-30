@@ -1,6 +1,6 @@
 ---
 name: aerospike-managed-service
-product_version: '0.0.17'
+product_version: '0.0.30'
 minimum_version_for_upgrade: '0.0.1'
 metadata_version: '1.5'
 label: Aeropsike Managed Service
@@ -15,8 +15,8 @@ serial: true
 
 releases:
 - name: aerospike-managed-service
-  file: aerospike-managed-service-0.0.2.tgz
-  version: '0.0.17'
+  file: aerospike-managed-service-0.0.3.tgz
+  version: '0.0.3'
 
 post_deploy_errands:
 - name: service-broker
@@ -62,6 +62,7 @@ property_blueprints:
   - name: name
     type: string
     configurable: true
+    description: The name for the namespace
     unique: true
   - name: memory_size
     type: string
@@ -101,15 +102,26 @@ property_blueprints:
         error_message: 'Default TTL must match the regex [0-9]+[SMHD]'
     decription: The default TTL for this namespace
   - name: storage_type
-    type: dropdown_select
+    type: string
     configurable: true
-    default: memory
-    description: The storage type used for this namespace
-    options:
-      - name: memory
-        label: 'Memory'
-      - name: device
-        label: 'Device'
+    default: 'memory'
+    constraints:
+      - must_match_regex: 'memory|device'
+        error_message: 'Storage type must be either memory or device'
+    description: The storage type used for this namespace (memory or device)
+  - name: file_size
+    type: string
+    configurable: true
+    default: '1G'
+    constraints: 
+      - must_match_regex: '[0-9]+[KMGTP]'
+        error_message: 'File size must match the regex [0-9]+[KMGTP]'
+    description: The size of the disk file backing this namespace
+  - name: data_in_memory
+    type: boolean
+    configurable: true
+    default: true
+    description: If true, the database will keep a copy of all data for this namespace in memory
 
 #
 # Standard properties for package service_broker
@@ -285,6 +297,14 @@ form_types:
       label: Storage Type
       description: The type of storage for this namespace
       slug: false
+    - reference: file_size
+      label: File Size
+      description: The size of the file on disk backing this namespace
+      slug: false
+    - reference: data_in_memory
+      label: Data In Memory
+      description: If true, the database will keep a copy of all data from this namespace in memory
+      slug: false
 
 #
 # Service access form
@@ -388,13 +408,8 @@ job_types:
     security:
       user: (( .aerospikeserver.app_credentials.identity ))
       password: (( .aerospikeserver.app_credentials.password ))
-    aerospike_db_host: (( .properties.aerospike_db_host.value ))
-    aerospike:
-      service:
-        service_addr: (( .aerospike.ips ))
-        aerospike_db_host: (( .aerospike.first_ip ))
+    aerospike_db_host: (( .aerospikeserver.first_ip  ))
     aerospike_db_port: (( .properties.aerospike_db_port.value ))
-    dynamic_service_plans: (( .properties.dynamic_service_plans.value ))
     service_broker:
       name: service_broker
       user: (( .aerospikeserver.app_credentials.identity ))
@@ -427,8 +442,8 @@ job_types:
     type: integer
     configurable: false
     default: 1
-  static_ip: 0
-  dynamic_ip: 1
+  static_ip: 1
+  dynamic_ip: 0
   max_in_flight: 1
   single_az_only: false
   instance_definitions:
@@ -460,8 +475,6 @@ job_types:
     security:
       user: (( .aerospikeserver.app_credentials.identity ))
       password: (( .aerospikeserver.app_credentials.password ))
-    aerospike_db_host: (( .properties.aerospike_db_host.value ))
-    aerospike_db_port: (( .properties.aerospike_db_port.value ))
     service_broker:
       name: service_broker
       user: (( .aerospikeserver.app_credentials.identity ))
@@ -474,8 +487,8 @@ job_types:
         transaction_queues: (( .properties.transaction_queues.value ))
         transaction_threads_per_queue: (( .properties.transaction_threads_per_queue.value ))
         proto_fd_max: (( .properties.proto_fd_max.value ))
-        service_addr: (( .aerospike.ips ))
-        my_addr: (( .aerospike.first_ip ))
+        service_addr: (( .aerospikeserver.ips ))
+        my_addr: (( .aerospikeserver.first_ip ))
         namespaces: (( .properties.namespaces.value ))
       network:
         service_port: (( .properties.service_port.value ))
@@ -551,4 +564,4 @@ requires_product_versions:
 
 provides_product_versions:
 - name: aerospike-managed-service
-  version: '0.0.17'
+  version: '0.0.30'

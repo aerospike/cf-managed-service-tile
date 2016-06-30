@@ -21,8 +21,27 @@ jobs: (( merge ))
 
 properties: (( merge ))
 
-resource_pools: (( merge ))
-  - stemcell: (( meta.stemcell ))
+resource_pools:
+  - name: vms
+    network: default
+    size: (( auto ))
+    stemcell: (( meta.stemcell ))
+    cloud_properties:
+      instance_type: default
+    
+  - name: aerospike-nodes
+    network: aerospike-nodes
+    size: (( auto ))
+    stemcell: (( meta.stemcell ))
+    cloud_properties:
+      datacenters:
+      - name: my-dc
+        clusters:
+        - my-vsphere-cluster:
+            drs_rules:
+            - name: separate-aerospike-nodes-rule
+              type: separate_vms  
+
 compilation:
   workers: 1
   network: default
