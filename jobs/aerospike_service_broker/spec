@@ -1,11 +1,12 @@
 ---
-name: service-broker
+name: aerospike_service_broker
 templates:
   ctl.erb: bin/run
   init.sh.erb: bin/init.sh
   
 packages:
 - cf_cli
+- aerospike_service_broker
 
 properties:
   domain:

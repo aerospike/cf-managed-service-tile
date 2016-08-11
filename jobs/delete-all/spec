@@ -5,7 +5,7 @@ templates:
 
 packages:
 - cf_cli
-- service-broker
+- aerospike_service_broker
 
 properties:
   domain:

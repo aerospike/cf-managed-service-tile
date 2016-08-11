@@ -4,5 +4,5 @@ name: aerospikeserver
 dependencies: []
 
 files:
-- aerospike-tools.tgz
-- aerospike.tgz
+- aerospike_server/aerospike-tools.tgz
+- aerospike_server/aerospike.tgz

@@ -1,0 +1,8 @@
+---
+name: aerospike_service_broker
+
+dependencies: []
+
+files:
+- aerospike_service_broker/service-broker-0.0.1-SNAPSHOT.jar
+- aerospike_service_broker/manifest.yml

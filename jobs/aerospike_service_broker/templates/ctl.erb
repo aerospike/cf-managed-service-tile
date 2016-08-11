@@ -154,7 +154,7 @@ function add_env_vars() {
 	cf set-env $1 AEROSPIKE_DB_HOST "$AEROSPIKE_DB_HOST"
 	cf set-env $1 AEROSPIKE_DB_PORT "$AEROSPIKE_DB_PORT"
 
-	export AEROSPIKE_DB_HOST1=`cf env service-broker-0.0.5 | grep AEROSPIKE_DB_HOST1 | awk '{print $2}'`
+	export AEROSPIKE_DB_HOST1=`cf env aerospike-service-broker | grep AEROSPIKE_DB_HOST1 | awk '{print $2}'`
 	# Addresses of bosh vms
 }
 
@@ -306,9 +306,9 @@ apply_open_security_group "$APPLY_OPEN_SECURITY_GROUP"
 # Deploy package service_broker
 #
 
-export PKG_NAME=service_broker
-export APP_NAME=service-broker-0.0.5
-export APP_HOST=service-broker
+export PKG_NAME=aerospike_service_broker
+export APP_NAME=aerospike-service-broker
+export APP_HOST=aerospike-service-broker
 export DOCKER_IMAGE=""
 export NEEDS_CF_CREDS=""
 export HEALTH_CHECK=""
@@ -317,7 +317,7 @@ export SVC_PLAN=""
 provision_auto_service "$PKG_NAME" "$APP_NAME" "$SVC_NAME" "$SVC_PLAN"
 start_app service-broker "$APP_NAME"
 
-export BROKER_NAME=service-broker
+export BROKER_NAME=aerospike-service-broker
 export BROKER_USER=<%= properties.service_broker.user %>
 export BROKER_PASS=<%= properties.service_broker.password %>
 export BROKER_SERVICES=""

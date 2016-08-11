@@ -24,7 +24,7 @@ set +e -x
 export HOSTNAME=<%="#{my_ip}"%>
 export AEROSPIKE_DB_HOST=<%="#{my_ip}"%>
 
-cf set-env service-broker-0.0.5 AEROSPIKE_DB_HOST1 $AEROSPIKE_DB_HOST
+cf set-env aerospike-service-broker AEROSPIKE_DB_HOST1 $AEROSPIKE_DB_HOST
 
 export RUN_DIR=/var/vcap/sys/run/aerospike
 export LOG_DIR=/var/vcap/sys/log/aerospike

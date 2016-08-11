@@ -58,7 +58,7 @@ namespace cf_admin {
 	replication-factor 2
 	memory-size 100M
 	default-ttl 0
-	storage-engine memory { }
+	storage-engine memory 
 }
 
 <% if properties.aerospike.service.namespaces %>
@@ -69,13 +69,15 @@ namespace <%= namespace["name"] %> {
     default-ttl <%= namespace["default_ttl"] %>
     high-water-memory-pct <%= namespace["high_water_memory_pct"] %>
     high-water-disk-pct <%= namespace["high_water_disk_pct"] %>
-    storage-engine <%= namespace["storage_type"] %> { 
     <% if namespace["storage_type"] == "device" %>
+    storage-engine <%= namespace["storage_type"] %> { 
         file /var/vcap/store/<%= namespace["name"] %>.dat
         filesize <%= namespace["file_size"] %>
         data-in-memory <%= namespace["data_in_memory"] %>
-    <% end %>
     }
+    <% else %>
+    storage-engine <%= namespace["storage_type"] %>
+    <% end %>
 }
     <% end %>
 <% end %>
