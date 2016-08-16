@@ -19,7 +19,7 @@ then
 	useradd -d /var/vcap/data/aerospike aerospike
 
 	#install server
-	cp /var/vcap/packages/aerospikeserver/*.* /var/vcap/data/aerospike
+	cp /var/vcap/packages/aerospike_server/*.* /var/vcap/data/aerospike
 	pushd /var/vcap/data/aerospike
 		tar -xvf aerospike.tgz 
 		pushd aerospike-server
@@ -37,7 +37,7 @@ then
 	#set up config file
 	pushd /var/vcap/data/aerospike/aerospike-server/etc
 		mv aerospike.conf aerospike.conf.orig
-		cp /var/vcap/jobs/aerospikeserver/config/aerospike.conf .
+		cp /var/vcap/jobs/aerospike_server/config/aerospike.conf .
 	popd
 fi
 

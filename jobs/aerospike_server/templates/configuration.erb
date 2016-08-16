@@ -33,10 +33,10 @@ network {
 
     heartbeat {
         mode mesh
-        address <%= p("aerospike.service.my_addr") %>
+        address <%= spec.networks.to_h.values.first.ip %>
         port <%= p("aerospike.network.heartbeat_port") %>
-		<% if properties.aerospike.service.job_ips %>
-		    <%  p("aerospike.service.job_ips").each do |ip_addr| %>
+		<% if properties.aerospike.service.service_addr %>
+		    <%  p("aerospike.service.service_addr").each do |ip_addr| %>
   				mesh-seed-address-port <%="#{ip_addr}"%> <%= p("aerospike.network.heartbeat_port") %>
 		    <% end %>
 		<% end %>

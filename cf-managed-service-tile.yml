@@ -1,6 +1,6 @@
 ---
 name: aerospike-managed-service
-product_version: '0.0.38'
+product_version: '0.0.40'
 minimum_version_for_upgrade: '0.0.1'
 metadata_version: '1.5'
 label: Aeropsike Managed Service
@@ -180,7 +180,7 @@ property_blueprints:
   configurable: true
 - name: heartbeat_port
   type: integer
-  default: 9918
+  default: 3002
   configurable: true
 - name: heartbeat_interval
   type: integer
@@ -406,24 +406,24 @@ job_types:
     apply_open_security_group: (( .properties.apply_open_security_group.value ))
     allow_paid_service_plans: (( .properties.allow_paid_service_plans.value ))
     security:
-      user: (( .aerospikeserver.app_credentials.identity ))
-      password: (( .aerospikeserver.app_credentials.password ))
-    aerospike_db_host: (( .aerospikeserver.first_ip  ))
+      user: (( .aerospike_server.app_credentials.identity ))
+      password: (( .aerospike_server.app_credentials.password ))
+    aerospike_db_host: (( .aerospike_server.first_ip  ))
     aerospike_db_port: (( .properties.aerospike_db_port.value ))
     service_broker:
       name: service_broker
-      user: (( .aerospikeserver.app_credentials.identity ))
-      password: (( .aerospikeserver.app_credentials.password ))
+      user: (( .aerospike_server.app_credentials.identity ))
+      password: (( .aerospike_server.app_credentials.password ))
       enable_global_access_to_plans: (( .properties.service_broker_enable_global_access_to_plans.value ))
 
 #
-# aerospikeserver job
+# aerospike_server job
 #
-- name: aerospikeserver
-  resource_label: aerospikeserver
+- name: aerospike_server
+  resource_label: aerospike_server
   errand: false
   templates:
-  - name: aerospikeserver
+  - name: aerospike_server
     release: aerospike-managed-service
   resource_definitions:
   - name: ram
@@ -473,12 +473,12 @@ job_types:
     apply_open_security_group: (( .properties.apply_open_security_group.value ))
     allow_paid_service_plans: (( .properties.allow_paid_service_plans.value ))
     security:
-      user: (( .aerospikeserver.app_credentials.identity ))
-      password: (( .aerospikeserver.app_credentials.password ))
+      user: (( .aerospike_server.app_credentials.identity ))
+      password: (( .aerospike_server.app_credentials.password ))
     service_broker:
       name: service_broker
-      user: (( .aerospikeserver.app_credentials.identity ))
-      password: (( .aerospikeserver.app_credentials.password ))
+      user: (( .aerospike_server.app_credentials.identity ))
+      password: (( .aerospike_server.app_credentials.password ))
       enable_global_access_to_plans: (( .properties.service_broker_enable_global_access_to_plans.value ))
     aerospike:
       service:
@@ -487,8 +487,8 @@ job_types:
         transaction_queues: (( .properties.transaction_queues.value ))
         transaction_threads_per_queue: (( .properties.transaction_threads_per_queue.value ))
         proto_fd_max: (( .properties.proto_fd_max.value ))
-        service_addr: (( .aerospikeserver.ips ))
-        my_addr: (( .aerospikeserver.first_ip ))
+        service_addr: (( .aerospike_server.ips ))
+        my_addr: (( .aerospike_server.first_ip ))
         namespaces: (( .properties.namespaces.value ))
       network:
         service_port: (( .properties.service_port.value ))
@@ -564,4 +564,4 @@ requires_product_versions:
 
 provides_product_versions:
 - name: aerospike-managed-service
-  version: '0.0.38'
+  version: '0.0.40'

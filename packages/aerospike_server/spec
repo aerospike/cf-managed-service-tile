@@ -1,5 +1,5 @@
 ---
-name: aerospikeserver
+name: aerospike_server
 
 dependencies: []
 

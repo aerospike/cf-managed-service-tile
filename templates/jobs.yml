@@ -5,19 +5,19 @@ meta:
   job_templates: (( merge ))
 
 jobs:
-- name: aerospikeserver
+- name: aerospike_server
   instances: 1
   templates:
-  - name: aerospikeserver
+  - name: aerospike_server
     release: aerospike-managed-service
   resource_pool: aerospike-nodes
   networks:
   - name: aerospike-nodes
 
-- name: service-broker
+- name: aerospike_service_broker
   instances: 1
   templates: 
-  - name: service-broker
+  - name: aerospike_service_broker
     release: aerospike-managed-service
   resource_pool: vms
   networks:

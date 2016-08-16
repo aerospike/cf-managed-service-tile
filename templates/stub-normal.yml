@@ -5,7 +5,7 @@ meta:
   security_groups:
     - default
   job_templates:
-    - name: aerospikeserver
+    - name: aerospike_server
       release: aerospike-managed-service
   stemcell:
     name: STEMCELL

@@ -1,12 +1,12 @@
 ---
-name: aerospikeserver
+name: aerospike_server
 templates:
  init.sh.erb: bin/init.sh
  ctl.erb: bin/ctl
  configuration.erb: config/aerospike.conf
 
 packages:
-- aerospikeserver
+- aerospike_server
 
 properties:
   aerospike.service.paxos_single_replica_limit:
@@ -28,8 +28,13 @@ properties:
     description: "Listen address(es) for the aerospike cluster instances"
   aerospike.service.my_addr:
     description: "IP address of this instance"
+  aerospike.service.service_addr:
+    description: "IPs of all hosts in cluster"
   aerospike.service.namespaces:
     description: "Namespaces for this database"
+
+  aerospike..service.my_ip_addr:
+    description: "My IP address"
 
   aerospike.network.service_port:
     default: 3000
@@ -41,7 +46,7 @@ properties:
     default: 3003
     description: "TCP port used for info management"
   aerospike.network.heartbeat_port:
-    default: 9918
+    default: 3002
     description: "TCP port used for cluster state communication"
   aerospike.network.heartbeat_interval:
     default: 150
