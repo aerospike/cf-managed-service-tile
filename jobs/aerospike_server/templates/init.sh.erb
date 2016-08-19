@@ -28,7 +28,7 @@ cf set-env aerospike-service-broker AEROSPIKE_DB_HOST1 $AEROSPIKE_DB_HOST
 
 export RUN_DIR=/var/vcap/sys/run/aerospike
 export LOG_DIR=/var/vcap/sys/log/aerospike
-export PIDFILE=${RUN_DIR}/pid
+export PIDFILE=${RUN_DIR}/aerospike_server.pid
 
 mkdir -p $RUN_DIR $LOG_DIR
 chown -R vcap:vcap $RUN_DIR $LOG_DIR
@@ -38,7 +38,6 @@ export DEBUG_LOG=$LOG_DIR/aerospikeserver.log
 touch $DEBUG_LOG
 chmod -R 755 /var/vcap/sys
 chmod 777 $DEBUG_LOG
-
 
 function log_debug() {
   echo `date` $1 >> $DEBUG_LOG

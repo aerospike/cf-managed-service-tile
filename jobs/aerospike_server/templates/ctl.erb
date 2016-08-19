@@ -3,42 +3,38 @@ set -ax
 # RUN_DIR=/var/vcap/sys/run/aerospike
 #LOG_DIR=/var/vcap/sys/log/aerospike
 #PIDFILE=${RUN_DIR}/pid
+STORE_DIR=/var/vcap/store/aerospike
+DATA_DIR=/var/vcap/data/aerospike
+SERVER_DIR=/var/vcap/data/aerospike/aerospike-server
 
 SCRIPT_DIR=$(dirname $0)
 . $SCRIPT_DIR/init.sh
 
-
-#mkdir -p $RUN_DIR $LOG_DIR
 exec &2>$LOG_DIR/aerospike.stdout.log
 exec &1>$LOG_DIR/aerospike.stdout.log
 
-
-if [ ! -d /var/vcap/data/aerospike || ! -d /var/vcap/data/aerospike/aerospike-server  ]
+if [ ! -d ${DATA_DIR} || ! -d ${SERVER_DIR}  ]
 then
-	mkdir -p /var/vcap/data/aerospike
-	useradd -d /var/vcap/data/aerospike aerospike
+	mkdir -p ${DATA_DIR}
+	mkdir -p ${STORE_DIR}
+	chown -R vcap:vcap ${STORE_DIR}
+	useradd -d ${DATA_DIR} aerospike
+
+	mkdir -p ${STORE_DIR}/{smd,{sys,usr}/udf/lua}
 
 	#install server
 	cp /var/vcap/packages/aerospike_server/*.* /var/vcap/data/aerospike
-	pushd /var/vcap/data/aerospike
-		tar -xvf aerospike.tgz 
-		pushd aerospike-server
-			./bin/aerospike init
+
+	pushd ${DATA_DIR}
+		tar -xvf aerospike-server-*.tgz 
+		pushd aerospike-server-*
+			sudo dpkg -x aerospike-server-*.deb ../aerospike-server
+			sudo dpkg -i aerospike-tools-*.deb
 		popd
+		sudo cp -pr ./aerospike-server/opt/aerospike/sys/udf/lua/* ${STORE_DIR}/sys/udf/lua
 	popd
 
-	#install tools
-	pushd /var/vcap/data/aerospike 
-		tar -xvf aerospike-tools.tgz && cd aerospike-server-community-*
-		sudo dpkg -i aerospike-tools-*.ubuntu12.04.x86_64.deb
-	popd
-	echo `date` Started install at /var/vcap/data/aerospike...
-
-	#set up config file
-	pushd /var/vcap/data/aerospike/aerospike-server/etc
-		mv aerospike.conf aerospike.conf.orig
-		cp /var/vcap/jobs/aerospike_server/config/aerospike.conf .
-	popd
+    sudo chown -R vcap:vcap ${STORE_DIR}/{smd,{sys,usr}/udf/lua}
 fi
 
 case $1 in
@@ -47,16 +43,16 @@ case $1 in
 	chown -R vcap:vcap $RUN_DIR $LOG_DIR
 
 	pushd /var/vcap/data/aerospike/aerospike-server
-		./bin/aerospike start
+		sudo ./usr/bin/asd \
+		  	--config-file /var/vcap/jobs/aerospike_server/config/aerospike.conf \
+		  	start
 	popd
-	pgrep asd > $PIDFILE
     ;;
 
   stop)
 	pushd  /var/vcap/data/aerospike/aerospike-server
-		./bin/aerospike stop
+		sudo ./usr/bin/asd stop
 	popd
-	pgrep asd || rm $PIDFILE
 	echo `date` Done killing server
     ;;
 

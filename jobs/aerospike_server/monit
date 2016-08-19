@@ -1,7 +1,7 @@
 check process server
-  with pidfile /var/vcap/sys/run/aerospike/pid
+  with pidfile /var/vcap/sys/run/aerospike/aerospike_server.pid
   start program "/var/vcap/jobs/aerospike_server/bin/ctl start"
- 	with timeout 300 seconds
+ 	with timeout 120 seconds
   stop program "/var/vcap/jobs/aerospike_server/bin/ctl stop"
- 	with timeout 300 seconds
+ 	with timeout 120 seconds
   group vcap

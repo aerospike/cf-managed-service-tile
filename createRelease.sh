@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # For use to create final release tarball
-VERSION=0.0.3
+VERSION=0.0.40
 CREATE_FINAL_TARBALL=true
 RELEASE_NAME=aerospike-managed-service
 

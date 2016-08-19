@@ -3,26 +3,27 @@
 
 # This stanza must come first.
 service {
-    user root
-    group root
+    user vcap
+    group vcap
+    run-as-daemon true
     paxos-single-replica-limit <%= p("aerospike.service.paxos_single_replica_limit") %>
-    pidfile /var/vcap/data/aerospike/aerospike-server/var/run/aerospike.pid
+    pidfile /var/vcap/sys/run/aerospike/aerospike_server.pid
     service-threads <%= p("aerospike.service.service_threads") %>
     transaction-queues <%= p("aerospike.service.transaction_queues") %>
     transaction-threads-per-queue <%= p("aerospike.service.transaction_threads_per_queue") %>
     proto-fd-max <%= p("aerospike.service.proto_fd_max") %>
-    work-directory /var/vcap/data/aerospike/aerospike-server/var
+    work-directory /var/vcap/store/aerospike
 }
 
 logging {
-    file /var/vcap/data/aerospike/aerospike-server/var/log/aerospike.log {
+    file /var/vcap/sys/log/aerospike/aerospike.log {
         context any info
     }
 }
 
 mod-lua {
-  system-path /var/vcap/data/aerospike/aerospike-server/share/udf/lua
-  user-path /var/vcap/data/aerospike/aerospike-server/var/udf/lua
+  system-path /var/vcap/store/aerospike/sys/udf/lua
+  user-path /var/vcap/store/aerospike/usr/udf/lua
 }
 
 network {
