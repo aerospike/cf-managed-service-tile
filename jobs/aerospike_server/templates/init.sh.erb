@@ -43,3 +43,22 @@ function log_debug() {
   echo `date` $1 >> $DEBUG_LOG
 }
 
+function set_shmall() {
+  mem=`/sbin/sysctl -n kernel.shmall`
+  min=4294967296
+  if [ "$mem" -lt $min ]
+  then
+    log_debug "kernel.shmall too low, setting to 4G pages"
+    /sbin/sysctl -w kernel.shmall=$min
+  fi
+}
+
+function set_shmmax() {
+  mem=`/sbin/sysctl -n kernel.shmmax`
+  min=1073741824
+  if [ "$mem" -lt $min ]
+  then
+    log_debug "kernel.shmmax too low, setting to 1GB"
+    /sbin/sysctl -w kernel.shmmax=$min
+  fi
+}

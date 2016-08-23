@@ -41,7 +41,10 @@ case $1 in
 
   start)
 	chown -R vcap:vcap $RUN_DIR $LOG_DIR
-
+	set_shmall
+	set_shmmax
+	ulimit -n 100000
+	
 	pushd /var/vcap/data/aerospike/aerospike-server
 		sudo ./usr/bin/asd \
 		  	--config-file /var/vcap/jobs/aerospike_server/config/aerospike.conf \
