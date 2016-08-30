@@ -15,9 +15,14 @@ properties:
   aerospike.service.service_threads:
     default: 4
     description: "Number of threads receiving client requests on the network interface"
-  aerospike.serivce.aerospike_license_type:
-    default: "community"
+  aerospike.service.aerospike_license_type:
+    default: community
     description: "License type of server (community or enterprise)"
+  aerospike.service.aerospike_db_user:
+    default: admin
+    description: "User to use for administration of the Aerospike DB"
+  aerospike.service.aerospike_db_password:
+    description: "Password to use for administration of the Aerospike DB"
   aerospike.service.transaction_queues:
     default: 4
     description: "Number of transaction queues managing client requests. Service threads will dispatch transactions into those queues (round robin)"

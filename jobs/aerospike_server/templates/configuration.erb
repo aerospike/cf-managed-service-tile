@@ -26,6 +26,12 @@ mod-lua {
   user-path /var/vcap/store/aerospike/usr/udf/lua
 }
 
+<% if p("aerospike.service.aerospike_license_type") == "enterprise" %>
+security {
+    enable-security true
+}
+<% end %>
+
 network {
     service {
         address any
@@ -72,7 +78,7 @@ namespace <%= namespace["name"] %> {
     high-water-disk-pct <%= namespace["high_water_disk_pct"] %>
     <% if namespace["storage_type"] == "device" %>
     storage-engine <%= namespace["storage_type"] %> { 
-        file /var/vcap/store/<%= namespace["name"] %>.dat
+        file /var/vcap/store/aerospike/<%= namespace["name"] %>.dat
         filesize <%= namespace["file_size"] %>
         data-in-memory <%= namespace["data_in_memory"] %>
     }

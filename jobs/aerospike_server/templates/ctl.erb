@@ -6,6 +6,7 @@ set -ax
 STORE_DIR=/var/vcap/store/aerospike
 DATA_DIR=/var/vcap/data/aerospike
 SERVER_DIR=/var/vcap/data/aerospike/aerospike-server
+CONFIG_USER=false
 
 SCRIPT_DIR=$(dirname $0)
 . $SCRIPT_DIR/init.sh
@@ -15,6 +16,7 @@ exec &1>$LOG_DIR/aerospike.stdout.log
 
 if [ ! -d ${DATA_DIR} || ! -d ${SERVER_DIR}  ]
 then
+	CONFIG_USER=true
 	mkdir -p ${DATA_DIR}
 	mkdir -p ${STORE_DIR}
 	chown -R vcap:vcap ${STORE_DIR}
@@ -44,12 +46,19 @@ case $1 in
 	set_shmall
 	set_shmmax
 	ulimit -n 100000
-	
+
 	pushd /var/vcap/data/aerospike/aerospike-server
 		sudo ./usr/bin/asd \
 		  	--config-file /var/vcap/jobs/aerospike_server/config/aerospike.conf \
 		  	start
 	popd
+	log_debug "LICENSE ${AEROSPIKE_LICENSE} CONFIG ${CONFIG_USER}"
+	if [ "$CONFIG_USER" == true ] && [ "$AEROSPIKE_LICENSE" == "enterprise" ] ; then
+		sleep 30s
+		aql -Uadmin -Padmin -c "create role cf_admin privileges read-write.cf_admin"
+		aql -Uadmin -Padmin -c "grant role cf_admin to admin"
+		aql -Uadmin -Padmin -c "set password ${AEROSPIKE_PASSWORD} for ${AEROSPIKE_USER}"
+	fi
     ;;
 
   stop)

@@ -42,6 +42,14 @@ properties:
     description: aerospike_db_host
   aerospike_db_port:
     description: aerospike_db_port
+  aerospike_license_type:
+    description: aerospike_license_type
+  aerospike_admin_namespace:
+    description: aerospike_admin_namespace    
+  aerospike_admin_user:
+    description: 'User name for Aerospike DB'
+  aerospike_admin_password:
+    description: 'Password for Aerospike DB'
   dynamic_service_plans:
     description: 'Dynamic service plans'
   service_broker.name:
@@ -53,4 +61,3 @@ properties:
   service_broker.enable_global_access_to_plans:
     description: 'Access to all service plans'
     default: false
-

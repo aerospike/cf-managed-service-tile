@@ -23,8 +23,14 @@ set +e -x
 # Set the ip to HOSTNAME to avoid listener getting bound to some internal only hostname
 export HOSTNAME=<%="#{my_ip}"%>
 export AEROSPIKE_DB_HOST=<%="#{my_ip}"%>
+export AEROSPIKE_USER=<%=properties.aerospike.service.aerospike_db_user %>
+export AEROSPIKE_PASSWORD=<%=properties.aerospike.service.aerospike_db_password %>
+export AEROSPIKE_LICENSE=<%=properties.aerospike.service.aerospike_license_type %>
 
 cf set-env aerospike-service-broker AEROSPIKE_DB_HOST1 $AEROSPIKE_DB_HOST
+cf set-env aerospike-service-broker AEROSPIKE_ADMIN_USER $AEROSPIKE_USER
+cf set-env aerospike-service-broker AEROSPIKE_ADMIN_PASSWORD $AEROSPIKE_PASSWORD
+cf set-env aerospike-service-broker AEROSPIKE_LICENSE_TYPE $AEROSPIKE_LICENSE
 
 export RUN_DIR=/var/vcap/sys/run/aerospike
 export LOG_DIR=/var/vcap/sys/log/aerospike

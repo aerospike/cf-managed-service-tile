@@ -52,6 +52,10 @@ function import_opsmgr_variables() {
 	export DYNAMIC_PLANS='<%= JSON.dump(plans) %>'
 	export AEROSPIKE_DB_HOST="<%= properties.aerospike_db_host %>"
 	export AEROSPIKE_DB_PORT="<%= properties.aerospike_db_port %>"
+	export AEROSPIKE_LICENSE_TYPE="<%= properties.aerospike_license_type %>"
+	export AEROSPIKE_ADMIN_NAMESPACE="<%= properties.aerospike_admin_namespace %>"
+	export AEROSPIKE_ADMIN_USER="<%= properties.aerospike_admin_user %>"
+	export AEROSPIKE_ADMIN_PASSWORD="<%= properties.aerospike_admin_password %>"
 }
 
 function prepare_cf_cli {
@@ -153,7 +157,11 @@ function add_env_vars() {
 	# Custom variables from tile.yml
 	cf set-env $1 AEROSPIKE_DB_HOST "$AEROSPIKE_DB_HOST"
 	cf set-env $1 AEROSPIKE_DB_PORT "$AEROSPIKE_DB_PORT"
-
+	cf set-env $1 AEROSPIKE_LICENSE_TYPE "$AEROSPIKE_LICENSE_TYPE"
+	cf set-env $1 AEROSPIKE_ADMIN_NAMESPACE "$AEROSPIKE_ADMIN_NAMESPACE"
+	cf set-env $1 AEROSPIKE_ADMIN_USER "$AEROSPIKE_ADMIN_USER"
+	cf set-env $1 AEROSPIKE_ADMIN_PASSWORD "$AEROSPIKE_ADMIN_PASSWORD"
+	
 	export AEROSPIKE_DB_HOST1=`cf env aerospike-service-broker | grep AEROSPIKE_DB_HOST1 | awk '{print $2}'`
 	# Addresses of bosh vms
 }
