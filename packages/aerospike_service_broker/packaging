@@ -1,5 +1,5 @@
 # abort script on any command that exits with a non zero value
 set -e
 
-cp aerospike_service_broker/service-broker-0.0.1-SNAPSHOT.jar ${BOSH_INSTALL_TARGET}
+cp aerospike_service_broker/service-broker-0.1.1.jar ${BOSH_INSTALL_TARGET}
 cp aerospike_service_broker/manifest.yml ${BOSH_INSTALL_TARGET}

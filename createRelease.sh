@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # For use to create final release tarball
-VERSION=0.0.41
+VERSION=0.1.0
 CREATE_FINAL_TARBALL=true
-RELEASE_NAME=aerospike-managed-service
+RELEASE_NAME=aerospike-enterprise-edition
 
 echo "Cleanup previous release ..."
 rm -rf releases/* .dev_builds/* .final_builds/*
