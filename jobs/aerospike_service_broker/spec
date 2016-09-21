@@ -38,6 +38,12 @@ properties:
     description: 'Basic auth user'
   security.password:
     description: 'Basic auth password'
+  aerospike_service_id:
+    description: aerospike_service_id
+  aerospike_service_name:
+    description: aerospike_service_name
+  aerospike_service_description:
+    description: aerospike_service_description
   aerospike_db_host:
     description: aerospike_db_host
   aerospike_db_port:

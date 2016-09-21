@@ -50,6 +50,9 @@ function import_opsmgr_variables() {
 	  end
 	%>
 	export DYNAMIC_PLANS='<%= JSON.dump(plans) %>'
+	export AEROSPIKE_SERVICE_ID="<%= properties.aerospike_service_id %>"
+	export AEROSPIKE_SERVICE_NAME="<%= properties.aerospike_service_name %>"
+	export AEROSPIKE_SERVICE_DESCRIPTION="<%= properties.aerospike_service_description %>"
 	export AEROSPIKE_DB_HOST="<%= properties.aerospike_db_host %>"
 	export AEROSPIKE_DB_PORT="<%= properties.aerospike_db_port %>"
 	export AEROSPIKE_LICENSE_TYPE="<%= properties.aerospike_license_type %>"
@@ -155,6 +158,9 @@ function add_env_vars() {
 	cf set-env $1 PLANS "$DYNAMIC_PLANS"
 
 	# Custom variables from tile.yml
+	cf set-env $1 AEROSPIKE_SERVICE_ID "$AEROSPIKE_SERVICE_ID"
+	cf set-env $1 AEROSPIKE_SERVICE_NAME "$AEROSPIKE_SERVICE_NAME"
+	cf set-env $1 AEROSPIKE_SERVICE_DESCRIPTION "$AEROSPIKE_SERVICE_DESCRIPTION"
 	cf set-env $1 AEROSPIKE_DB_HOST "$AEROSPIKE_DB_HOST"
 	cf set-env $1 AEROSPIKE_DB_PORT "$AEROSPIKE_DB_PORT"
 	cf set-env $1 AEROSPIKE_LICENSE_TYPE "$AEROSPIKE_LICENSE_TYPE"
@@ -315,8 +321,8 @@ apply_open_security_group "$APPLY_OPEN_SECURITY_GROUP"
 #
 
 export PKG_NAME=aerospike_service_broker
-export APP_NAME=aerospike-service-broker
-export APP_HOST=aerospike-service-broker
+export APP_NAME=aerospike-managed-service
+export APP_HOST=aerospike-managed-service
 export DOCKER_IMAGE=""
 export NEEDS_CF_CREDS=""
 export HEALTH_CHECK=""
@@ -325,7 +331,7 @@ export SVC_PLAN=""
 provision_auto_service "$PKG_NAME" "$APP_NAME" "$SVC_NAME" "$SVC_PLAN"
 start_app service-broker "$APP_NAME"
 
-export BROKER_NAME=aerospike-service-broker
+export BROKER_NAME=aerospike-managed-service
 export BROKER_USER=<%= properties.service_broker.user %>
 export BROKER_PASS=<%= properties.service_broker.password %>
 export BROKER_SERVICES=""
