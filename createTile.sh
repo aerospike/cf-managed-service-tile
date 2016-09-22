@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TILE_VERSION=0.1.0
+TILE_VERSION=0.1.1
 TILE_MANIFEST_FILE=`pwd`/cf-managed-service-tile.yml
 TILE=Aerospike-Enterprise-Edition-v${TILE_VERSION}.pivotal
 RELEASE_TARFILE=`pwd`/releases/*/*.tgz

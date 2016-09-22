@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # For use to create final release tarball
-VERSION=0.1.0
+VERSION=0.1.1
 CREATE_FINAL_TARBALL=true
 RELEASE_NAME=aerospike-enterprise-edition
 
