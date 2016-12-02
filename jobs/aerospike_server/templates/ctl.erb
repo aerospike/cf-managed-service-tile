@@ -124,7 +124,7 @@ start_aerospike() {
 	fi
 }
 
-if [ ! -d ${DATA_DIR} || ! -d ${SERVER_DIR}  ]
+if [ ! -d ${DATA_DIR} ]
 then
 	CONFIG_USER=true
 	mkdir -p ${DATA_DIR}

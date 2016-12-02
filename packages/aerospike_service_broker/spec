@@ -4,5 +4,4 @@ name: aerospike_service_broker
 dependencies: []
 
 files:
-- aerospike_service_broker/service-broker-0.1.3.jar
-- aerospike_service_broker/manifest.yml
+- aerospike_service_broker/service-broker-*.jar

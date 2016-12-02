@@ -4,4 +4,4 @@ name: aerospike_server
 dependencies: []
 
 files:
-  - aerospike_server/aerospike-server-enterprise-3.9.1-ubuntu14.04.tgz
+  - aerospike-server-enterprise-*.tgz
