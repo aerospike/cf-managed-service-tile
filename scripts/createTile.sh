@@ -28,7 +28,7 @@ else
 fi
 source $SCRIPT_DIR/version
 
-TILE=Aerospike-Enterprise-Edition-v${TILE_VERSION}.pivotal
+TILE=Aerospike-EE-Managed-Service-v${TILE_VERSION}.pivotal
 RELEASE_TARFILE=$ROOT_DIR/dev_releases/*/*.tgz
 
 TEMPLATES_DIR=$ROOT_DIR/templates

@@ -59,6 +59,8 @@ function import_opsmgr_variables() {
 	export AEROSPIKE_ADMIN_NAMESPACE="<%= properties.aerospike_admin_namespace %>"
 	export AEROSPIKE_ADMIN_USER="<%= properties.aerospike_admin_user %>"
 	export AEROSPIKE_ADMIN_PASSWORD="<%= properties.aerospike_admin_password %>"
+	export AEROSPIKE_LICENSE_USER="<%= properties.aerospike_license_user %>"
+	export AEROSPIKE_LICENSE_PASSWORD="<%= properties.aerospike_license_password %>"
 }
 
 function prepare_cf_cli {
@@ -167,7 +169,7 @@ function add_env_vars() {
 	cf set-env $1 AEROSPIKE_ADMIN_NAMESPACE "$AEROSPIKE_ADMIN_NAMESPACE"
 	cf set-env $1 AEROSPIKE_ADMIN_USER "$AEROSPIKE_ADMIN_USER"
 	cf set-env $1 AEROSPIKE_ADMIN_PASSWORD "$AEROSPIKE_ADMIN_PASSWORD"
-	
+
 	export AEROSPIKE_DB_HOST1=`cf env aerospike-service-broker | grep AEROSPIKE_DB_HOST1 | awk '{print $2}'`
 	# Addresses of bosh vms
 }
@@ -205,9 +207,20 @@ function deploy_app() {
 	DOCKER_IMAGE="$4"
 	NEEDS_CF_CREDS="$5"
 	HEALTH_CHECK="$6"
-	cf push ${APP_NAME} -n ${APP_HOST} -d ${APP_DOMAIN} \
-		${DOCKER_IMAGE} -f $PACKAGE_PATH/${PKG_NAME}/manifest.yml \
-		--no-start
+
+	pushd $PACKAGE_PATH/${PKG_NAME}
+	  ARCHIVE=`ls service-broker*jar`
+	  mkdir tmp && cd tmp
+	  unzip ../${ARCHIVE}
+	  EXTRACTED_APP_FOLDER=`pwd`
+
+	  echo "aerospike_license_user: '${AEROSPIKE_LICENSE_USER}'" >> application.yml
+	  echo "aerospike_license_password: '${AEROSPIKE_LICENSE_PASSWORD}'" >> application.yml
+
+	  cf push ${APP_NAME} -n ${APP_HOST} -d ${APP_DOMAIN} \
+		  ${DOCKER_IMAGE} -p ${EXTRACTED_APP_FOLDER} --no-start
+	popd
+
 	add_env_vars ${APP_NAME}
 	if is_true "$NEEDS_CF_CREDS"; then
 		add_cf_credentials ${APP_NAME}

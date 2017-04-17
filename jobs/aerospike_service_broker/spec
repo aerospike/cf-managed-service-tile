@@ -56,6 +56,10 @@ properties:
     description: 'User name for Aerospike DB'
   aerospike_admin_password:
     description: 'Password for Aerospike DB'
+  aerospike_license_user:
+    description: 'User name for Aerospike EE License'
+  aerospike_license_password:
+    description: 'Password for Aerospike EE License'
   dynamic_service_plans:
     description: 'Dynamic service plans'
   service_broker.name:
