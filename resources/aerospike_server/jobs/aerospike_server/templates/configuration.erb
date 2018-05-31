@@ -1,0 +1,94 @@
+# Configuration template
+# Aerospike database configuration file.
+
+# This stanza must come first.
+service {
+    user vcap
+    group vcap
+    run-as-daemon true
+    paxos-single-replica-limit <%= p("aerospike.service.paxos_single_replica_limit") %>
+    pidfile /var/vcap/sys/run/aerospike/aerospike_server.pid
+    service-threads <%= p("aerospike.service.service_threads") %>
+    transaction-queues <%= p("aerospike.service.transaction_queues") %>
+    transaction-threads-per-queue <%= p("aerospike.service.transaction_threads_per_queue") %>
+    proto-fd-max <%= p("aerospike.service.proto_fd_max") %>
+    work-directory /var/vcap/store/aerospike
+    <% if_p("aerospike.service.feature_key") do |prop| %>
+        feature-key-file /var/vcap/jobs/aerospike_server/config/features.conf
+    <% end %>
+}
+
+logging {
+    file /var/vcap/sys/log/aerospike/aerospike.log {
+        context any info
+    }
+}
+
+mod-lua {
+  system-path /var/vcap/store/aerospike/sys/udf/lua
+  user-path /var/vcap/store/aerospike/usr/udf/lua
+}
+
+
+<% if p("aerospike.service.aerospike_license_type") == "enterprise" %>
+security {
+    enable-security true
+}
+<% end %>
+
+network {
+    service {
+        address any
+        port <%= p("aerospike.network.service_port") %>
+    }
+
+    heartbeat {
+        mode mesh
+        address <%= spec.address %>
+        port <%= p("aerospike.network.heartbeat_port") %>
+        <% nodes = link("aerospike_nodes") %>
+        <% nodes.instances.each do |node| %>
+        mesh-seed-address-port <%= node.address %> <%= nodes.p('aerospike.network.heartbeat_port') %>
+        <% end %>
+
+        interval <%= p("aerospike.network.heartbeat_interval") %>
+        timeout <%= p("aerospike.network.heartbeat_timeout") %>
+    }
+
+    fabric {
+        port <%= p("aerospike.network.fabric_port") %>
+    }
+
+    info {
+        port <%= p("aerospike.network.info_port") %>
+    }
+}
+
+# Namespace used by the Aerospike Service Broker
+namespace cf_admin {
+	replication-factor 2
+	memory-size 100M
+	default-ttl 0
+	storage-engine memory 
+}
+
+<% if properties.aerospike.service.namespaces %>
+    <%  p("aerospike.service.namespaces").each do |namespace| %>
+namespace <%= namespace["name"] %> {
+    replication-factor <%= namespace["replication_factor"] %>
+    memory-size <%= namespace["memory_size"] %>
+    default-ttl <%= namespace["default_ttl"] %>
+    high-water-memory-pct <%= namespace["high_water_memory_pct"] %>
+    high-water-disk-pct <%= namespace["high_water_disk_pct"] %>
+    <% if namespace["storage_type"] == "device" %>
+    storage-engine <%= namespace["storage_type"] %> { 
+        file /var/vcap/store/aerospike/<%= namespace["name"] %>.dat
+        filesize <%= namespace["file_size"] %>
+        data-in-memory <%= namespace["data_in_memory"] %>
+    }
+    <% else %>
+    storage-engine <%= namespace["storage_type"] %>
+    <% end %>
+}
+    <% end %>
+<% end %>

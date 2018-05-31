@@ -1,7 +1,0 @@
----
-name: aerospike_service_broker
-
-dependencies: []
-
-files:
-- aerospike_service_broker/service-broker-*.jar

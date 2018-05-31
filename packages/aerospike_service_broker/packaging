@@ -1,9 +1,0 @@
-# abort script on any command that exits with a non zero value
-set -e
-
-cp aerospike_service_broker/service-broker-*.jar ${BOSH_INSTALL_TARGET}
-cat <<EOT >> ${BOSH_INSTALL_TARGET}/manifest.yml
----
-memory: 512M
-path: service-broker-0.1.4.jar
-EOT

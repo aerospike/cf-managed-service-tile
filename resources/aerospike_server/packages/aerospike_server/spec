@@ -1,0 +1,7 @@
+---
+name: aerospike_server
+
+dependencies: []
+
+files:
+  - aerospike-server-enterprise-*.tgz
