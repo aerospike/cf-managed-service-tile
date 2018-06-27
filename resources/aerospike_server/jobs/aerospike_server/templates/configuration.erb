@@ -38,7 +38,7 @@ security {
 
 network {
     service {
-        address any
+        address <%= spec.address %>
         port <%= p("aerospike.network.service_port") %>
     }
 
