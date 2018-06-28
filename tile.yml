@@ -168,7 +168,7 @@ forms:
     description: Maximum Open File Descriptors.
     type: integer
     default: 15000
-  - name: features_key
+  - name: feature_key
     label: Features Key
     type: text
     description: Features key provided by Aerospike.
@@ -236,6 +236,7 @@ packages:
           transaction_queues: (( .properties.transaction_queues.value ))
           transaction_threads_per_queue: (( .properties.transaction_threads_per_queue.value ))
           proto_fd_max: (( .properties.proto_fd_max.value ))
+          feature_key: (( .properties.feature_key.value ))
         network:
           service_port: (( .properties.service_port.value ))
           fabric_port: (( .properties.fabric_port.value ))

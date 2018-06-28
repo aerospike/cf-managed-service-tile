@@ -13,7 +13,7 @@ service {
     transaction-threads-per-queue <%= p("aerospike.service.transaction_threads_per_queue") %>
     proto-fd-max <%= p("aerospike.service.proto_fd_max") %>
     work-directory /var/vcap/store/aerospike
-    <% if_p("aerospike.service.feature_key") do |prop| %>
+    <% if p("aerospike.service.aerospike_license_type") == "enterprise" %>
         feature-key-file /var/vcap/jobs/aerospike_server/config/features.conf
     <% end %>
 }
