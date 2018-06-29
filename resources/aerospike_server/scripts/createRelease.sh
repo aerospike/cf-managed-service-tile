@@ -39,7 +39,7 @@ echo "Cleanup previous release ..."
 rm -rf releases/* dev_releases/* .dev_builds/* .final_builds/*
 
 echo "Creating the release ..."
-bosh -n create-release --name $RELEASE_NAME --version $VERSION --tarball $RELEASE_TAR_NAME --force
+bosh -n create-release --name $RELEASE_NAME --version $VERSION --tarball $RELEASE_TAR_NAME --force --sha2
 echo "Done creating the release ..."
 echo "Moving the tar file to the release directory"
 cp $RELEASE_TAR_NAME dev_releases/*/
