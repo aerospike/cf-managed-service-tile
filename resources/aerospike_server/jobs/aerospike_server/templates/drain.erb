@@ -29,8 +29,7 @@ wait_for_migrations() {
     done
 }
 
-pidof asd
-if [ $? -eq 0 ]; then
+if pidof asd; then
    echo "Aerospike is running, checking for migrations"
 else
    echo "Aerospike is not running exiting"
