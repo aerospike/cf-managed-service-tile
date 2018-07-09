@@ -5,6 +5,7 @@ templates:
  ctl.erb: bin/ctl
  configuration.erb: config/aerospike.conf
  features.erb: config/features.conf
+ drain.erb: bin/drain
 
 packages:
 - aerospike_server
