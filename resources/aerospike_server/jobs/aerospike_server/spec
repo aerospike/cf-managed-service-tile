@@ -11,7 +11,7 @@ packages:
 - aerospike_server
 
 provides:
-- name: aerospike_node_link
+- name: aerospike_node
   type: aerospike_node
   properties:
   - aerospike.network.service_port
