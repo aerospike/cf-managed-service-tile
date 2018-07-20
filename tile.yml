@@ -212,7 +212,7 @@ packages:
 
 - name: aerospike_server
   type: bosh-release
-  path: resources/aerospike_server/aerospike_server-0.0.20.tgz
+  path: resources/aerospike_server/aerospike_server-0.0.21.tgz
   jobs:
   - name: aerospike_server
     templates:
@@ -228,6 +228,7 @@ packages:
         identity: admin
     static_ip: 0
     dynamic_ip: 1
+    persistent_disk: 4096
     properties:
       aerospike:
         service:
