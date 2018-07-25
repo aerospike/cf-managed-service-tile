@@ -167,7 +167,6 @@ forms:
     label: Features Key
     type: text
     description: Features key provided by Aerospike.
-    optional: true
 - name: aerospike-network-form
   label: Aerospike Network Configuration
   description: Networking Properties for Aerospike
