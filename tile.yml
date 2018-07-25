@@ -16,6 +16,10 @@ properties:
   type: string
   label: Aerospike Service Id
   default: aerospike
+- name: aerospike_license_type
+  type: string
+  label: Aerospike License type
+  default: enterprise
 - name: aerospike_service_name
   type: string
   label: Aerospike Service Namespace
@@ -134,15 +138,6 @@ forms:
       Please refer to the [configuration reference](http://www.aerospike.com/docs/reference/configuration) 
       for details on these service configuration properties.
   properties:
-  - name: aerospike_license_type
-    type: dropdown_select
-    label: Aerospike License type
-    default: enterprise
-    options: 
-      - name: community
-        label: 'Community'
-      - name: enterprise
-        label: 'Enterprise'
   - name: paxos_single_replica_limit
     label: Paxos Single Replica Limit
     description: If the cluster size is less than or equal to this value, only one copy of the data (no replicas) will be kept in the cluster.
