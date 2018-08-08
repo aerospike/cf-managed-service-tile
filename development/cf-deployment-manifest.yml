@@ -1,9 +1,9 @@
 ---
 name: aerospike-managed-service
-director_uuid: 93c01d2d-a2a5-49d8-8d02-389fd223a9cf
+director_uuid: d1cfd302-f419-4ea6-8a08-914dd2b7a133
 releases:
 - name: aerospike-managed-service
-  version: 0.1.2
+  version: 0.0.42
 
 update:
   canaries: 1
@@ -14,163 +14,147 @@ update:
   serial: true
 
 stemcells:
-- alias: bosh-warden-boshlite-ubuntu-trusty-go_agent
+- alias: default
   os: ubuntu-trusty
-  version: '3147'
+  version: latest
 
-jobs:
-- name: aerospike_service_broker
-  templates:
-  - name: aerospike_service_broker
-    release: aerospike-managed-service
-  lifecycle: errand
-  instances: 1
-  networks:
-  - name: aerospike
-    default:
-    - dns
-    - gateway
-
-  properties:
-    domain: run-03.haas-26.pez.pivotal.io
-    app_domains:
-    - cfapps-03.haas-26.pez.pivotal.io
-    org: aerospike-service-broker-org
-    space: aerospike-service-broker-space
-    ssl:
-      skip_cert_verify: true
-    cf:
-      admin_user: system_services
-      admin_password: c02fc01f5278a1d6953f
-    org_quota: 4096
-    apply_open_security_group: true
-    allow_paid_service_plans: true
-    security:
-      user: e8dfb52619cbe2fd
-      password: 516167836f74a0fb
-    aerospike_db_host: 10.65.180.113
-    aerospike_db_port: 3000
-    service_broker:
-      name: service_broker
-      user: e8dfb52619cbe2fd
-      password: 516167836f74a0fb
-      enable_global_access_to_plans: true
-  update:
-    max_in_flight: 1
-  vm_type: container
-  stemcell: bosh-warden-boshlite-ubuntu-trusty-go_agent
-  azs:
-  - lite
-
+instance_groups:
 - name: aerospike_server
-  templates:
+  azs: [z1]
+  stemcell: default
+  instances: 1
+  vm_type: default
+  networks:
+  - name: default
+  jobs:
   - name: aerospike_server
     release: aerospike-managed-service
-  lifecycle: service
-  instances: 1
-  networks:
-  - name: aerospike
-    default:
-    - dns
-    - gateway
+    properties:
+      domain: run-03.haas-26.pez.pivotal.io
+      app_domains:
+      - cfapps-03.haas-26.pez.pivotal.io
+      org: aerospike-service-broker-org
+      space: aerospike-service-broker-space
+      ssl:
+        skip_cert_verify: true
+      cf:
+        admin_user: system_services
+        admin_password: c02fc01f5278a1d6953f
+      org_quota: 4096
+      apply_open_security_group: true
+      allow_paid_service_plans: true
+      security:
+        user: e8dfb52619cbe2fd
+        password: 516167836f74a0fb
+      service_broker:
+        name: service_broker
+        user: e8dfb52619cbe2fd
+        password: 516167836f74a0fb
+        enable_global_access_to_plans: true
+      aerospike:        
+        service:
+          aerospike_license_type: enterprise
+          aerospike_db_user: admin
+          aerospike_db_password: 6e7c3acd
+          paxos_single_replica_limit: 1
+          service_threads: 4
+          transaction_queues: 4
+          transaction_threads_per_queue: 4
+          proto_fd_max: 15000
+          my_addr: 10.65.180.113
+          namespaces:
+          - guid: 4a17c4bb-c1ca-4e63-8024-6ed3779603d5
+            name: cf_session
+            memory_size: 100M
+            replication_factor: 2
+            high_water_memory_pct: '60'
+            high_water_disk_pct: '50'
+            default_ttl: 0S
+            storage_type: memory
+            file_size: 10M
+            data_in_memory: true
+          - guid: 6e7c3acd-50c7-400d-bf79-fc58ab143566
+            name: test
+            memory_size: 10M
+            replication_factor: 2
+            high_water_memory_pct: '60'
+            high_water_disk_pct: '50'
+            default_ttl: 0S
+            storage_type: memory
+            file_size: 1G
+            data_in_memory: true
+        network:
+          service_port: 3000
+          fabric_port: 3001
+          info_port: 3003
+          heartbeat_port: 3002
+          heartbeat_interval: 150
+          heartbeat_timeout: 10
 
-  properties:
-    domain: run-03.haas-26.pez.pivotal.io
-    app_domains:
-    - cfapps-03.haas-26.pez.pivotal.io
-    org: aerospike-service-broker-org
-    space: aerospike-service-broker-space
-    ssl:
-      skip_cert_verify: true
-    cf:
-      admin_user: system_services
-      admin_password: c02fc01f5278a1d6953f
-    org_quota: 4096
-    apply_open_security_group: true
-    allow_paid_service_plans: true
-    security:
-      user: e8dfb52619cbe2fd
-      password: 516167836f74a0fb
-    service_broker:
-      name: service_broker
-      user: e8dfb52619cbe2fd
-      password: 516167836f74a0fb
-      enable_global_access_to_plans: true
-    aerospike:        
-      service:
-        aerospike_license_type: enterprise
-        aerospike_db_user: admin
-        aerospike_db_password: 6e7c3acd
-        paxos_single_replica_limit: 1
-        service_threads: 4
-        transaction_queues: 4
-        transaction_threads_per_queue: 4
-        proto_fd_max: 15000
-        service_addr:
-        - 10.244.180.113
-  #      - 10.65.180.116
-  #      - 10.65.180.123
-        my_addr: 10.65.180.113
-        namespaces:
-        - guid: 4a17c4bb-c1ca-4e63-8024-6ed3779603d5
-          name: cf_session
-          memory_size: 100M
-          replication_factor: 2
-          high_water_memory_pct: '60'
-          high_water_disk_pct: '50'
-          default_ttl: 0S
-          storage_type: memory
-          file_size: 10M
-          data_in_memory: true
-        - guid: 6e7c3acd-50c7-400d-bf79-fc58ab143566
-          name: test
-          memory_size: 10M
-          replication_factor: 2
-          high_water_memory_pct: '60'
-          high_water_disk_pct: '50'
-          default_ttl: 0S
-          storage_type: memory
-          file_size: 1G
-          data_in_memory: true
-      network:
-        service_port: 3000
-        fabric_port: 3001
-        info_port: 3003
-        heartbeat_port: 3002
-        heartbeat_interval: 150
-        heartbeat_timeout: 10
-  update:
-    max_in_flight: 1
-  vm_type: container
-  stemcell: bosh-warden-boshlite-ubuntu-trusty-go_agent
-  azs:
-  - lite
+# - name: aerospike_service_broker
+#   azs: [z1]
+#   instances: 1
+#   vm_type: default
+#   stemcell: default
+#   networks:
+#     - name: default
+#   update:
+#     max_in_flight: 1
+#   jobs:
+#   - name: aerospike_service_broker
+#     release: aerospike-managed-service
+#     templates:
+#     - name: aerospike_service_broker
+#       release: aerospike-managed-service
+#     lifecycle: errand
+#     properties:
+#       domain: run-03.haas-26.pez.pivotal.io
+#       app_domains:
+#       - cfapps-03.haas-26.pez.pivotal.io
+#       org: aerospike-service-broker-org
+#       space: aerospike-service-broker-space
+#       ssl:
+#         skip_cert_verify: true
+#       cf:
+#         admin_user: system_services
+#         admin_password: c02fc01f5278a1d6953f
+#       org_quota: 4096
+#       apply_open_security_group: true
+#       allow_paid_service_plans: true
+#       security:
+#         user: e8dfb52619cbe2fd
+#         password: 516167836f74a0fb
+#       aerospike_db_host: 10.65.180.113
+#       aerospike_db_port: 3000
+#       service_broker:
+#         name: service_broker
+#         user: e8dfb52619cbe2fd
+#         password: 516167836f74a0fb
+#         enable_global_access_to_plans: true
 
-- name: delete-all
-  templates:
-  - name: delete-all
-    release: aerospike-managed-service
-  lifecycle: errand
-  instances: 1
-  networks:
-  - name: aerospike
-    default:
-    - dns
-    - gateway
-  properties:
-    domain: run-03.haas-26.pez.pivotal.io
-    app_domains:
-    - cfapps-03.haas-26.pez.pivotal.io
-    org: aerospike-service-broker-org
-    space: aerospike-service-broker-space
-    ssl:
-      skip_cert_verify: true
-    cf:
-      admin_user: system_services
-      admin_password: c02fc01f5278a1d6953f
-  update:
-    max_in_flight: 1
-  vm_type: container
-  stemcell: bosh-warden-boshlite-ubuntu-trusty-go_agent
-  azs:
-  - lite
+  # - name: delete-all
+  #   templates:
+  #   - name: delete-all
+  #     release: aerospike-managed-service
+  #   lifecycle: errand
+  #   azs: [z1]
+  #   instances: 1
+  #   networks:
+  #   - name: default
+  #   properties:
+  #     domain: run-03.haas-26.pez.pivotal.io
+  #     app_domains:
+  #     - cfapps-03.haas-26.pez.pivotal.io
+  #     org: aerospike-service-broker-org
+  #     space: aerospike-service-broker-space
+  #     ssl:
+  #       skip_cert_verify: true
+  #     cf:
+  #       admin_user: system_services
+  #       admin_password: c02fc01f5278a1d6953f
+  #   update:
+  #     max_in_flight: 1
+  #   vm_type: container
+  #   stemcell: default
+  #   azs:
+  #   - lite

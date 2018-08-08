@@ -3,7 +3,9 @@
 .final_builds/
 dev_releases/
 releases/
+release/
+product/
 config/dev.yml
 config/private.yml
 blobs/
-
+aerospike*.tgz

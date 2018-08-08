@@ -1,0 +1,78 @@
+---
+name: aerospike_server
+templates:
+ init.sh.erb: bin/init.sh
+ ctl.erb: bin/ctl
+ configuration.erb: config/aerospike.conf
+ features.erb: config/features.conf
+ drain.erb: bin/drain
+
+packages:
+- aerospike_server
+
+provides:
+- name: aerospike_node
+  type: aerospike_node
+  properties:
+  - aerospike.network.service_port
+  - aerospike.network.fabric_port
+  - aerospike.network.heartbeat_port
+  - aerospike.network.info_port
+  - aerospike.service.aerospike_db_user
+  - aerospike.service.aerospike_db_password
+
+consumes:
+- name: aerospike_nodes
+  type: aerospike_node
+
+properties:
+  aerospike.service.feature_key:
+    description: "Feature key for the enterprise edition server"
+  aerospike.service.paxos_single_replica_limit:
+    default: 1
+    description: "If the cluster size is less than or equal to this value, only one copy of the data (no replicas) will be kept in the cluster"
+  aerospike.service.service_threads:
+    default: 4
+    description: "Number of threads receiving client requests on the network interface"
+  aerospike.service.aerospike_license_type:
+    default: community
+    description: "License type of server (community or enterprise)"
+  aerospike.service.aerospike_db_user:
+    default: admin
+    description: "User to use for administration of the Aerospike DB"
+  aerospike.service.aerospike_db_password:
+    description: "Password to use for administration of the Aerospike DB"
+  aerospike.service.transaction_queues:
+    default: 4
+    description: "Number of transaction queues managing client requests. Service threads will dispatch transactions into those queues (round robin)"
+  aerospike.service.transaction_threads_per_queue:
+    default: 4
+    description: "Number of threads per transaction queue. Those threads will consume the requests from the transaction queues"
+  aerospike.service.proto_fd_max:
+    default: 15000
+    description: "Maximum number of open file descriptors opened on behalf of client connections"
+  aerospike.service.job_ips:
+    description: "Listen address(es) for the aerospike cluster instances"
+  aerospike.service.service_addr:
+    description: "IPs of all hosts in cluster"
+  aerospike.service.namespaces:
+    description: "Namespaces for this database"
+
+  aerospike.network.service_port:
+    default: 3000
+    description: "TCP port aerospike server listen on"
+  aerospike.network.fabric_port:
+    default: 3001
+    description: "TCP port for inter-node communication within the cluster"
+  aerospike.network.info_port:
+    default: 3003
+    description: "TCP port used for info management"
+  aerospike.network.heartbeat_port:
+    default: 3002
+    description: "TCP port used for cluster state communication"
+  aerospike.network.heartbeat_interval:
+    default: 150
+    description: "Interval in milliseconds in which heartbeats are sent"
+  aerospike.network.heartbeat_timeout:
+    default: 10
+    description: "Number of missing heartbeats after which the remote node will be declared dead"

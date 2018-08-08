@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -eox pipefail
+
+exec 3>&1
+exec 1>> /var/vcap/sys/log/aerospike/drain.stdout.log
+exec 2>> /var/vcap/sys/log/aerospike/drain.stderr.log
+
+echo "Drain script started"
+
+wait_for_migrations() {
+    CONTINUE=1
+    while [ $CONTINUE -ne 0 ]; do
+        sleep 5
+        <% if properties.aerospike.service.aerospike_license_type.downcase == "enterprise" %>
+        RES=($(asadm -Uadmin -P<%=properties.aerospike.service.aerospike_db_password %> -e "asinfo -l -v statistics" |grep migrate_partitions_remaining | cut -d "=" -f 2))
+        <% else %>
+        RES=($(asadm -e "asinfo -l -v statistics" |grep migrate_partitions_remaining | cut -d "=" -f 2))
+        <% end %>
+        CONTINUE=0
+        echo "Pending-migrations"
+        for remaining in "${RES[@]}"; do
+            if [ "$remaining" -ne 0 ]
+            then
+                echo "${remaining} migrations remaining"
+                CONTINUE=1
+            fi
+        done
+    done
+}
+
+if pidof asd; then
+   echo "Aerospike is running, checking for migrations"
+else
+   echo "Aerospike is not running exiting"
+   echo 0 >&3; exit 0;
+fi
+
+EXITCODE=1
+while [ $EXITCODE -ne 0 ]; do
+    trap wait_for_migrations EXIT
+    EXITCODE=$?
+    echo "Exit code was: $EXITCODE"
+done
+
+echo 0 >&3; exit $EXITCODE;

@@ -1,0 +1,259 @@
+---
+name: aerospike-enterprise-edition
+label: Aerospike EE Managed Service
+description: Managed service to create an Aerospike Enterprise Edition database cluster with service broker
+icon_file: resources/aerospike.png
+
+# Global defaults (all optional)
+# org: test-org                       # Optional
+# space: test-space                   # Optional
+org_quota: 4096                       # Optional, memory quota in mb
+apply_open_security_group: true       # Apply open security group, default: false
+allow_paid_service_plans: true        # Allow paid service plans, default: false
+
+properties:
+- name: aerospike_service_id
+  type: string
+  label: Aerospike Service Id
+  default: aerospike
+- name: aerospike_license_type
+  type: string
+  label: Aerospike License type
+  default: enterprise
+- name: aerospike_service_name
+  type: string
+  label: Aerospike Service Namespace
+  default: aerospike
+- name: aerospike_service_description
+  type: string
+  label: Aerospike Service Description
+  default: Managed Service Implementation for an Aerospike database
+- name: aerospike_admin_namespace
+  type: string
+  default: cf_admin
+- name: aerospike_db_credentials
+  type: simple_credentials
+  default:
+    identity: admin
+
+forms:
+
+- name: aerospike-namespaces-form
+  label: Aerospike Namespaces
+  description: Operator-Defined Aerospike Namespaces
+  markdown: |
+      ## Aerospike namespaces configuration. 
+
+      Use this configuration tab to create the list of namespaces for the Aerospike database.
+  properties:
+  - name: namespaces
+    type: collection
+    label: Namespaces
+    configurable: true
+    property_blueprints:
+    - name: name
+      type: string
+      label: Namespace name
+      default: 'ns1'
+      description: The name for the namespace
+      unique: true
+    - name: memory_size
+      type: string
+      default: '2G'
+      label: Memory Size
+      description: Memory size of this namespace
+      constraints:
+      - must_match_regex: '[0-9]+[KMGTP]'
+        error_message: 'Memory size must match the regex [0-9]+[KMGTP]'
+    - name: replication_factor
+      type: integer
+      default: 2
+      label: Replication Factor
+      decription: Replication factor for this namespace
+    - name: high_water_memory_pct
+      type: string
+      default: '60'
+      label: High Water Memory Percent
+      description: Data will be evicted if the memory utilization is greater than this specified percentage.
+      constraints:
+      - must_match_regex: '^[0-9][0-9]?$|^100$'
+        error_message: 'Enter a value from 0-100 for high water memory percent'
+    - name: high_water_disk_pct
+      type: string
+      label: High Water Disk Percent
+      default: '50'
+      description: Data will be evicted if the disk utilization is greater than this specified percentage.
+      constraints:
+      - must_match_regex: '^[0-9][0-9]?$|^100$'
+        error_message: 'Enter a value from 0-100 for high water disk percent'
+    - name: default_ttl
+      type: string
+      default: '0'
+      label: Default TTL
+      constraints:
+      - must_match_regex: '[0-9]+[SMHD]?'
+        error_message: 'Default TTL must match the regex [0-9]+[SMHD]?'
+      description: The default TTL for this namespace. 0 means lives forever.
+    - name: storage_type
+      type: dropdown_select
+      label: Storage Type
+      default: memory
+      options: 
+        - name: memory
+          label: 'Memory'
+        - name: device
+          label: 'Device'
+      configurable: true
+      description: The storage type used for this namespace (memory or device)
+    - name: file_size
+      type: string
+      label: File Size
+      default: '1G'
+      constraints: 
+      - must_match_regex: '[0-9]+[KMGTP]'
+        error_message: 'File size must match the regex [0-9]+[KMGTP]'
+      description: The size of the disk file backing this namespace
+    - name: data_in_memory
+      label: Data In Memory
+      type: boolean
+      default: true
+      description: If true, keep a copy of all data in memory always.
+    default:
+    - name: 'ns'
+      memory_size: '2G'
+      replication_factor: 2
+      high_water_memory_pct: '60'
+      high_water_disk_pct: '50'
+      default_ttl: '0'
+      storage_type: 'memory'
+      file_size: '1G'
+      data_in_memory: true
+
+- name: aerospike-service-form
+  label: Aerospike Service Configuration
+  description: Service Properties for Aerospike
+  markdown: |
+      ## Aerospike service configuration. 
+
+      Please refer to the [configuration reference](http://www.aerospike.com/docs/reference/configuration) 
+      for details on these service configuration properties.
+  properties:
+  - name: paxos_single_replica_limit
+    label: Paxos Single Replica Limit
+    description: If the cluster size is less than or equal to this value, only one copy of the data (no replicas) will be kept in the cluster.
+    type: integer
+    default: 1
+  - name: service_threads
+    label: Service Threads
+    description: Number of threads receiving client requests on the network interface.
+    type: integer
+    default: 4
+  - name: transaction_queues
+    label: Transaction Queues
+    description: Number of transaction queues managing client requests. Service threads will dispatch transactions into those queues (round robin)
+    type: integer
+    default: 4
+  - name: transaction_threads_per_queue
+    label: Transaction Threads Per Queue
+    description: Number of threads per transaction queue. Those threads will consume the requests from the transaction queues.
+    type: integer
+    default: 4
+  - name: proto_fd_max
+    label: Maximum Open FDs
+    description: Maximum Open File Descriptors.
+    type: integer
+    default: 15000
+  - name: feature_key
+    label: Features Key
+    type: text
+    description: Features key provided by Aerospike.
+- name: aerospike-network-form
+  label: Aerospike Network Configuration
+  description: Networking Properties for Aerospike
+  markdown: |
+    ## Aerospike network configuration. 
+
+    Please refer to the [configuration reference](http://www.aerospike.com/docs/reference/configuration) 
+    for details on these networking configuration properties.
+  properties:
+  - name: service_port
+    label: Aerospike Service Port
+    description: Application, Tools, and Remote XDR use the Service port for database operations and cluster state.
+    type: integer
+    default: 3000
+  - name: fabric_port
+    label: Aerospike Fabric Port
+    type: integer
+    default: 3001
+  - name: heartbeat_port
+    label: Aerospike Heartbeat Port
+    type: integer
+    default: 3002
+  - name: info_port
+    label: Aerospike Info Port
+    type: integer
+    default: 3003
+  - name: heartbeat_interval
+    label: Aerospike Heartbeat Interval
+    type: integer
+    default: 150
+  - name: heartbeat_timeout
+    label: Aerospike Heartbeat Timeout
+    type: integer
+    default: 10
+
+packages:
+
+- name: aerospike_server
+  type: bosh-release
+  path: resources/aerospike_server/aerospike_server-0.0.21.tgz
+  jobs:
+  - name: aerospike_server
+    templates:
+    - name: aerospike_server
+      release: aerospike_server
+      provides:
+        aerospike_node: {}
+    property_blueprints:
+    - name: db_credentials
+      type: simple_credentials
+      label: Database Credentials
+      default:
+        identity: admin
+    static_ip: 0
+    dynamic_ip: 1
+    persistent_disk: 4096
+    properties:
+      aerospike:
+        service:
+          namespaces: (( .properties.namespaces.value ))
+          aerospike_db_user: (( .properties.aerospike_db_credentials.identity ))
+          aerospike_db_password: (( .properties.aerospike_db_credentials.password ))
+          aerospike_license_type: (( .properties.aerospike_license_type.value ))
+          paxos_single_replica_limit: (( .properties.paxos_single_replica_limit.value ))
+          service_threads: (( .properties.service_threads.value ))
+          transaction_queues: (( .properties.transaction_queues.value ))
+          transaction_threads_per_queue: (( .properties.transaction_threads_per_queue.value ))
+          proto_fd_max: (( .properties.proto_fd_max.value ))
+          feature_key: (( .properties.feature_key.value ))
+        network:
+          service_port: (( .properties.service_port.value ))
+          fabric_port: (( .properties.fabric_port.value ))
+          info_port: (( .properties.info_port.value ))
+          heartbeat_port: (( .properties.heartbeat_port.value ))
+          heartbeat_interval: (( .properties.heartbeat_interval.value ))
+          heartbeat_timeout: (( .properties.heartbeat_timeout.value ))
+
+- name: aerospike_service_broker               # Broker with minimal configuration, i.e. all default values
+  type: app-broker
+  consumes:
+    aerospike_node:
+      optional: true
+  enable_global_access_to_plans: true
+  manifest:
+    path: resources/service-broker-0.1.6.jar
+    memory: 1G                      # Override memory, default: 1G
+    buildpack: java_buildpack_offline
+    env:
+      aerospike_admin_user: (( .properties.aerospike_db_credentials.identity ))
+      aerospike_admin_password: (( .properties.aerospike_db_credentials.password ))
