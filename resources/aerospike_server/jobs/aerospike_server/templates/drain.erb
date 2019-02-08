@@ -13,9 +13,9 @@ wait_for_migrations() {
     while [ $CONTINUE -ne 0 ]; do
         sleep 5
         <% if properties.aerospike.service.aerospike_license_type.downcase == "enterprise" %>
-        RES=($(asadm -Uadmin -P<%=properties.aerospike.service.aerospike_db_password %> -e "asinfo -l -v statistics" |grep migrate_partitions_remaining | cut -d "=" -f 2))
+        RES=($(aql -Uadmin -P<%=properties.aerospike.service.aerospike_db_password %> -c  "set output raw; asinfo statistics" | grep migrate_part | cut -d ":" -f 2 | tr -d '"'))
         <% else %>
-        RES=($(asadm -e "asinfo -l -v statistics" |grep migrate_partitions_remaining | cut -d "=" -f 2))
+        RES=($(aql -c "set output raw; asinfo statistics" | grep migrate_part | cut -d ":" -f 2 | tr -d '"'))
         <% end %>
         CONTINUE=0
         echo "Pending-migrations"
