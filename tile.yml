@@ -206,7 +206,7 @@ packages:
 
 - name: aerospike_server
   type: bosh-release
-  path: resources/aerospike_server/aerospike_server-0.0.21.tgz
+  path: resources/aerospike_server/aerospike_server-0.0.23.tgz
   jobs:
   - name: aerospike_server
     templates:
